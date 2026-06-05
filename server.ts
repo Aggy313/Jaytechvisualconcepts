@@ -20,8 +20,8 @@ const PORT = 3000;
 
 app.use(express.json());
 
-// Serve generated images statically under /src/assets/images/
-app.use("/src/assets/images", express.static(path.join(process.cwd(), "src/assets/images")));
+// Serve generated images statically under /images
+app.use("/images", express.static(path.join(process.cwd(), "public/images")));
 
 // Initialize server-side Firebase & Firestore
 const firebaseConfigPath = path.join(process.cwd(), "firebase-applet-config.json");
@@ -218,7 +218,7 @@ const DEFAULT_SERVICES = [
     ],
     iconName: "Layers",
     priceStarting: "Ksh 35,000",
-    image: "/src/assets/images/figma_ui_ux_architecture_map_1780657851022.png"
+    image: "/images/figma_ui_ux_architecture_map_1780657851022.png"
   },
   {
     id: "webs",
@@ -323,7 +323,7 @@ const DEFAULT_PROJECTS = [
     title: "Apex Logistics Explainer",
     category: "Motion Graphics",
     description: "Highly engaging kinetic infographic detailing supply-chain routes and technical telemetry statistics.",
-    image: "/src/assets/images/apex_logistics_explainer_1780490862460.png",
+    image: "/images/apex_logistics_explainer_1780490862460.png",
     challenge: "B2B customers didn't understand the proprietary logistics tech, extending sales pipeline cycles.",
     solution: "Designed a pristine, 2-minute motion explainer using clean linear colors, smooth easing curves, and animated maps.",
     results: "Reduced corporate sales cycle times by an average of 18 days due to instant clarity."
@@ -399,7 +399,7 @@ const DEFAULT_BLOG_POSTS = [
     category: "Branding",
     summary: "Discover why physical materials and flat digital layouts are evolving into hyper-realistic, glassmorphic brand guides to engage modern, design-literate audiences.",
     content: "## The Visual Landscape is Changing\n\nTo survive in today's digital environment, brand identity can no longer be a static PDF manual hiding on a corporate drive. Winning brands are treating their visual presence in an organic, living context.\n\n### 1. Minimalist but Brave\n\nWe see high-contrast, bold display typography coupled with soft background gradients taking the crown. Standard blue blocks are obsolete. Modern design requires high-end contrast using crisp off-whites and dark cosmic slates.\n\n### 2. Micro-Interactions on the Web\n\nWhen someone hovers over an action element, they expect physical feedback. High-performing agencies understand how motion patterns guide user focus and build structural trust.",
-    image: "/src/assets/images/brand_identity_guide_1780658228928.png",
+    image: "/images/brand_identity_guide_1780658228928.png",
     date: "May 24, 2026",
     author: "Jay Tech",
     readTime: "5 min read"

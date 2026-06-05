@@ -30,13 +30,14 @@ import { User, ServiceItem, ProjectItem, TestimonialItem, BlogPostItem } from ".
 import { auth, db } from "./lib/firebase";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
+import { fallbackServices, fallbackProjects, fallbackTestimonials, fallbackBlogs } from "./lib/staticData";
 
 export default function App() {
   // Global Database state
-  const [services, setServices] = useState<ServiceItem[]>([]);
-  const [projects, setProjects] = useState<ProjectItem[]>([]);
-  const [testimonials, setTestimonials] = useState<TestimonialItem[]>([]);
-  const [blogs, setBlogs] = useState<BlogPostItem[]>([]);
+  const [services, setServices] = useState<ServiceItem[]>(fallbackServices);
+  const [projects, setProjects] = useState<ProjectItem[]>(fallbackProjects);
+  const [testimonials, setTestimonials] = useState<TestimonialItem[]>(fallbackTestimonials);
+  const [blogs, setBlogs] = useState<BlogPostItem[]>(fallbackBlogs);
 
   // Auth User state
   const [user, setUser] = useState<User | null>(null);
