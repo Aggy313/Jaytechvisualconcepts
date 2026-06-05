@@ -64,7 +64,8 @@ export default function About() {
             <img
               src="https://images.unsplash.com/photo-1542744094-3a31f103e35f?auto=format&fit=crop&w=1200&q=80"
               alt="Creative office meeting"
-              className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
+              className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105 max-w-full"
+              referrerPolicy="no-referrer"
             />
             {/* Overlay Branding Text */}
             <div className="absolute bottom-6 left-6 z-20">
