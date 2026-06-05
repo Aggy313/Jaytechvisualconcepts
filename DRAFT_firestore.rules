@@ -1,0 +1,114 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // 1. Great Catch-All (Default Deny)
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // --- REUSABLE PRIMITIVES / HELPERS ---
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && (
+        request.auth.token.email == "aggreyjavan46@gmail.com" ||
+        (exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true)
+      );
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    // --- ENTITY SCHEMA VALIDATIONS ---
+
+    function isValidUser(data) {
+      return data.id is string && data.id.size() <= 128
+        && data.name is string && data.name.size() > 0 && data.name.size() <= 100
+        && data.email is string && data.email.size() > 0 && data.email.size() <= 150
+        && data.isAdmin is bool
+        && (data.get('phone', '') is string && data.get('phone', '').size() <= 50)
+        && (data.get('avatar', '') is string && data.get('avatar', '').size() <= 1000);
+    }
+
+    function isValidLead(data) {
+      return data.id is string && data.id.size() <= 128
+        && data.name is string && data.name.size() > 0 && data.name.size() <= 100
+        && data.email is string && data.email.size() > 0 && data.email.size() <= 150
+        && data.phone is string && data.phone.size() > 0 && data.phone.size() <= 50
+        && data.businessName is string && data.businessName.size() > 0 && data.businessName.size() <= 200
+        && (data.get('industry', '') is string && data.get('industry', '').size() <= 100)
+        && (data.get('goals', '') is string && data.get('goals', '').size() <= 1000)
+        && (data.get('audience', '') is string && data.get('audience', '').size() <= 1000)
+        && (data.get('auditResponse', '') is string && data.get('auditResponse', '').size() <= 50000)
+        && data.status is string && (data.status == 'pending' || data.status == 'processed');
+    }
+
+    function isValidMessage(data) {
+      return data.id is string && data.id.size() <= 128
+        && data.name is string && data.name.size() > 0 && data.name.size() <= 100
+        && data.email is string && data.email.size() > 0 && data.email.size() <= 150
+        && data.subject is string && data.subject.size() > 0 && data.subject.size() <= 200
+        && data.message is string && data.message.size() > 0 && data.message.size() <= 5000;
+    }
+
+    // --- ENDPOINTS MATCHING RULES ---
+
+    // 1. User profiles matching
+    match /users/{userId} {
+      allow get: if isOwner(userId) || isAdmin();
+      allow list: if isAdmin();
+      
+      allow create: if isOwner(userId) 
+        && isValidId(userId)
+        && isValidUser(incoming())
+        && incoming().isAdmin == false; // Protect admin escalation
+
+      allow update: if isOwner(userId)
+        && isValidId(userId)
+        && isValidUser(incoming())
+        && incoming().isAdmin == existing().isAdmin // Protect admin escalation
+        && incoming().createdAt == existing().createdAt; // Immutable createdAt
+        
+      allow delete: if isAdmin();
+    }
+
+    // 2. Leads collection rules
+    match /leads/{leadId} {
+      allow get: if isAdmin();
+      allow list: if isAdmin();
+      
+      allow create: if isValidId(leadId)
+        && isValidLead(incoming());
+        
+      allow update, delete: if isAdmin();
+    }
+
+    // 3. Messages collection rules
+    match /messages/{messageId} {
+      allow get: if isAdmin();
+      allow list: if isAdmin();
+      
+      allow create: if isValidId(messageId)
+        && isValidMessage(incoming());
+        
+      allow update, delete: if isAdmin();
+    }
+  }
+}

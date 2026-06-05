@@ -1,0 +1,81 @@
+{
+  "entities": {
+    "User": {
+      "title": "User Profile",
+      "description": "User profile data stored under their authenticated UID.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Unique user ID (corresponds to request.auth.uid)" },
+        "name": { "type": "string", "description": "Full name of the user" },
+        "email": { "type": "string", "description": "Email address" },
+        "phone": { "type": "string", "description": "Phone number" },
+        "isAdmin": { "type": "boolean", "description": "Is the user an administrator" },
+        "avatar": { "type": "string", "description": "URL to their profile picture" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Timestamp of account creation" }
+      },
+      "required": ["id", "name", "email", "isAdmin", "createdAt"]
+    },
+    "Lead": {
+      "title": "Inquiry Lead",
+      "description": "Consultation booking lead or generated Brand Audit.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Unique lead identifier" },
+        "name": { "type": "string", "description": "Contact full name" },
+        "email": { "type": "string", "description": "Contact email" },
+        "phone": { "type": "string", "description": "Contact phone number" },
+        "businessName": { "type": "string", "description": "Leads business name" },
+        "industry": { "type": "string", "description": "Business industry sector" },
+        "goals": { "type": "string", "description": "Business goals and indicators" },
+        "audience": { "type": "string", "description": "Target audience segment" },
+        "auditResponse": { "type": "string", "description": "Generated Brand Audit report text" },
+        "status": { "type": "string", "enum": ["pending", "processed"], "description": "Internal handling status" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Timestamp of lead submission" }
+      },
+      "required": ["id", "name", "email", "phone", "businessName", "status", "createdAt"]
+    },
+    "Message": {
+      "title": "Contact Message",
+      "description": "Contact inquiry form submission.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Unique message identifier" },
+        "name": { "type": "string", "description": "Sender full name" },
+        "email": { "type": "string", "description": "Sender email" },
+        "subject": { "type": "string", "description": "Inquiry subject" },
+        "message": { "type": "string", "description": "Inquiry message text" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Submission timestamp" }
+      },
+      "required": ["id", "name", "email", "subject", "message", "createdAt"]
+    },
+    "Subscription": {
+      "title": "Mailing List Subscription",
+      "description": "Newsletter mailing list subscriber details.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Unique subscription ID" },
+        "email": { "type": "string", "description": "Subscriber email address" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Timestamp of subscription" }
+      },
+      "required": ["id", "email", "createdAt"]
+    }
+  },
+  "firestore": {
+    "users/{userId}": {
+      "schema": "User",
+      "description": "User profiles"
+    },
+    "leads/{leadId}": {
+      "schema": "Lead",
+      "description": "Leads containing brand queries & audits"
+    },
+    "messages/{messageId}": {
+      "schema": "Message",
+      "description": "General messaging contact inquiries"
+    },
+    "subscriptions/{subscriptionId}": {
+      "schema": "Subscription",
+      "description": "Mailing list subscribers"
+    }
+  }
+}
